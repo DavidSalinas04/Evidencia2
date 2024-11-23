@@ -6,6 +6,8 @@
 #include <cmath>
 #include <climits>
 #include <cfloat>
+#include <string>
+#include <thread>
 
 using namespace std;
 
@@ -170,6 +172,89 @@ pair<int, double> encontrarCentralMasCercana(int x, int y, const vector<pair<int
     return {indiceMasCercano, distanciaMinima};
 }
 
+void menu(int n, vector<vector<int>> matrizAdy, vector<vector<int>> capacidad, vector<pair<int, int>> centrales) {
+    int opcion;
+    cout<<endl; 
+    cout<<"-------------------"<<endl;
+    cout<<"Evidencia 2 - Algoritmos y Estructuras de Datos"<<endl;
+    cout<<"-------------------"<<endl;
+    cout<<"Jose Ignacio Paez"<<endl; 
+    cout<<"David Salinas"<<endl; 
+    cout<<"-------------------"<<endl;
+    this_thread::sleep_for(std::chrono::seconds(3));
+    do{
+        auto resultadoTSP = tspNearestNeighbor(n, matrizAdy);
+        auto mst = kruskalMST(n, matrizAdy);
+
+        cout<<"Menu"<<endl;
+        cout << "1. Forma de cablear las colonias con fibra" << endl;
+        cout << "2. Ruta mas corta" << endl;
+        cout << "3. Flujo máximo" << endl;
+        cout << "4. Central más cercana" << endl;
+        cout << "5. Salir" << endl;
+        cin >> opcion;
+        
+        switch (opcion) {
+            case 1: {
+                cout << "Forma de cablear las colonias con fibra" << endl;
+                for (auto& arista : mst) {
+                    cout << "(" << char('A' + arista.u) << ", " << char('A' + arista.v) << ")" << endl;
+                }
+                cout<<"-------------------"<<endl;
+                this_thread::sleep_for(std::chrono::seconds(2));
+                break;
+            }
+            case 2: {
+                cout << "Ruta mas corta:" << endl;
+                for (int nodo : resultadoTSP.first) {
+                    cout << char('A' + nodo) << " -> ";
+                }
+                cout << "FIN" << endl;
+                cout << "Costo total de la ruta: " << resultadoTSP.second << endl;
+                cout<<"-------------------"<<endl;
+                this_thread::sleep_for(std::chrono::seconds(2));
+                break;
+            }
+            case 3: {
+                int fuente, destino;
+                cout << "Introduce el nodo fuente (0-" << n - 1 << "): ";
+                cin >> fuente;
+                cout << "Introduce el nodo destino (0-" << n - 1 << "): ";
+                cin >> destino;
+                int flujoMaximo = fordFulkerson(capacidad, fuente, destino);
+                cout << "El flujo máximo desde " << char('A' + fuente) << " hasta " << char('A' + destino) << " es: " << flujoMaximo << endl;
+                cout<<"-------------------"<<endl;
+                this_thread::sleep_for(std::chrono::seconds(2));
+                break;
+            }
+            case 4: {
+                int x, y;
+                cout << "Introduce las coordenadas de la nueva casa (x y): ";
+                cin >> x >> y;
+                auto resultadoCentral = encontrarCentralMasCercana(x, y, centrales);
+                cout << "La central mas cercana es la " << resultadoCentral.first << " a una distancia de " << resultadoCentral.second << "km"<<endl;
+                cout<<"-------------------"<<endl;
+                this_thread::sleep_for(std::chrono::seconds(2));
+                break;
+            }
+            case 5: {
+                cout<<"Saliendo..."<<endl;
+                this_thread::sleep_for(std::chrono::seconds(2));
+                
+                break;
+            }
+            default: {
+                cerr << "Opción no válida" << endl;
+                cout<<"-------------------"<<endl;
+                this_thread::sleep_for(std::chrono::seconds(2));
+                break;
+            }
+            }
+    }while(opcion!=5); 
+}
+
+    
+
 int main(int argc, char* argv[]) {
     if (argc != 2) {
         cerr << "Uso: " << argv[0] << " <nombre_archivo>" << endl;
@@ -214,43 +299,8 @@ int main(int argc, char* argv[]) {
 
     archivo.close();
 
-    // Punto 1
-    vector<Arista> mst = kruskalMST(n, matrizAdy);
-
-    cout << "Forma de cablear las colonias con fibra:" << endl;
-    for (auto& arista : mst) {
-        cout << "(" << char('A' + arista.u) << ", " << char('A' + arista.v) << ")" << endl;
-    }
-
-    // Punto 2
-    auto resultadoTSP = tspNearestNeighbor(n, matrizAdy);
-
-    cout << "\nRuta mas corta:" << endl;
-    for (int nodo : resultadoTSP.first) {
-        cout << char('A' + nodo) << " -> ";
-    }
-    cout << "FIN" << endl;
-
-    cout << "Costo total de la ruta: " << resultadoTSP.second << endl;
-
-    // Punto 3
-    int fuente, destino;
-    cout << "\nIntroduce el nodo fuente (0-" << n - 1 << "): ";
-    cin >> fuente;
-    cout << "Introduce el nodo destino (0-" << n - 1 << "): ";
-    cin >> destino;
-
-    int flujoMaximo = fordFulkerson(capacidad, fuente, destino);
-    cout << "El flujo máximo desde " << char('A' + fuente) << " hasta " << char('A' + destino) << " es: " << flujoMaximo << endl;
-
-    // Punto 4
-    int x, y;
-    cout << "\nIntroduce las coordenadas de la nueva casa (x y): ";
-    cin >> x >> y;
-
-    auto resultadoCentral = encontrarCentralMasCercana(x, y, centrales);
-    cout << "La central mas cercana es la " << resultadoCentral.first << " a una distancia de " << resultadoCentral.second << endl;
-
-    return 0;
+    
+    menu(n, matrizAdy, capacidad, centrales);
+    
 
 }
