@@ -1,0 +1,9 @@
+Actividad Integradora 2
+
+Integrantes: 
+Jose Ignacio Paez
+David Salinas 
+
+Tareas: 
+David Salinas: Puntos uno y dos de la actividad (Kruskal y NearestNeighbor) 
+Jose Ignacio Paez: Puntos tres y cuatro de la actividad (fordFulkerson y distancia de poligonos)
